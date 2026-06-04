@@ -1,0 +1,71 @@
+---
+title: "Probability Distributions"
+output: html_document
+date: "2026-06-04"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exploration: The Memoryless Property of the geometric Distribution 
+
+### Problem Context 
+The geometric distribution is uniquelly **memoryless**. Mathematically , if $Y$ represents the trial of the first success with probability $p$ , then for positive integers $a$ and $b$ :
+
+$$P(Y > a + b \mid Y > a) = P(Y > b)$$
+
+This means that if we for example, flip a coint $a$ times, without a success, the probability that we need to flip it more that $b$ *additional* times is exactly the same as if we were flipping it $b$ times from the very beginning.
+
+### The Objective 
+We will simulate a geometric process in R to empirically demonstrate this property.We will compare a baseline geometric distribution against a conditional distribution that has survived $a$ times. 
+
+```{r}
+
+# Set up variables
+prob_success <- 0.2
+cutoff <- 5
+total_simulations <- 50000
+
+# 1. Baseline: Standard geometric simulation
+baseline <- rgeom(total_simulations, prob = prob_success) + 1
+
+# 2. Conditional: Generate a large pool, then keep only the ones greater than our cutoff
+large_pool <- rgeom(total_simulations * 5, prob = prob_success) + 1
+survived <- large_pool[large_pool > cutoff]
+
+# Take the first 50,000 that survived, and subtract the cutoff
+extra_hidden_trials <- survived[1:total_simulations] - cutoff
+
+# Split the plotting screen
+par(mfrow =c(1,2))
+
+# Plot 1: The Baseline 
+hist(baseline,
+     breaks = 30,
+     main = "Standard Distribution",
+     xlab = "Trials until success",
+     col = "green")
+     
+# Plot 2: The Extra Trials
+hist(extra_hidden_trials,
+     breaks = 30,
+     main = "After Already Failing 5 Times",
+     xlab = "Extra trials until success",
+     col = "red")
+        
+```
+
+### Conclusion 
+
+From the generated plots, we can visually observe that the distributions of both the baseline (non-conditional) trials and the shifted conditional trials are virtually identical.
+
+### Why This Happens in Code
+When we filtered our `large_pool` to only include games that lasted longer than our `cutoff` ($a = 5$), we isolated the simulations where a player experienced an initial streak of bad luck. By subtracting the cutoff from these survivors (`survived - cutoff`), we effectively reset their timeline back to "Time Zero."
+
+If the process had a "memory," the players who already failed 5 times should show a different probability pattern moving forward. Instead, R's random generation reveals that their remaining path looks exactly like a brand-new game.
+
+### Connection to Exercise 3.71
+This simulation provides empirical weight to the algebraic proof required in **Exercise 3.71**:
+
+$$P(Y > a + b \mid Y > a) = P(Y > b)$$
