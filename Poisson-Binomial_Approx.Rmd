@@ -1,0 +1,23 @@
+---
+title: "Poisson_Binomial_Approx"
+output: html_document
+date: "2026-06-05"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exploration: The Poisson Approximation of the Binomial Distribution
+### Problem Context
+The Binomial distribution can be approximated by a Poisson distribution when the number of trials $n$ becomes large and the probability of success $p$ becomes small, keeping the rate $\lambda = np$ constant.
+We know the probability mass function (PMF) of the Binomial distribution is:$$P(X = k) = \binom{n}{k} p^k (1-p)^{n-k}$$
+Taking the limit as $n$ approaches infinity and $p$ approaches zero yields the Poisson PMF:$$\lim_{n \to \infty, p \to 0} \binom{n}{k} p^k (1-p)^{n-k} = \frac{\lambda^k e^{-\lambda}}{k!}$$ 
+However, I became suspicious when the textbook stated rigid, specific bounds for which this is considered a "good" approximation (as stated in the source, $\lambda < 7$). This project empirically tests those claims to see where the approximation actually holds up.
+
+### The Objective
+We will simulate and compare Binomial distributions against their Poisson counterparts using varying parameters. Specifically, we will write a loop to calculate the Total Variation Distance ($d_{TV}$) for each setup, split the plotting screen to visually compare $\lambda = 4$, $\lambda = 6$, and $\lambda = 12$, display their corresponding distances below the graphs, and draw conclusions based on the empirical error data.
+
+
+
+
