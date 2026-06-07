@@ -19,5 +19,72 @@ However, I became suspicious when the textbook stated rigid, specific bounds for
 We will simulate and compare Binomial distributions against their Poisson counterparts using varying parameters. Specifically, we will write a loop to calculate the Total Variation Distance ($d_{TV}$) for each setup, split the plotting screen to visually compare $\lambda = 4$, $\lambda = 6$, and $\lambda = 12$, display their corresponding distances below the graphs, and draw conclusions based on the empirical error data.
 
 
+```{r, fig.height=4, fig.width=12}
+# Set up variables  
+n <- 100
+lambdas <- c(4, 6, 12)
+p_values <- lambdas / n
+k_max <- 25 
 
+# Set up transparent pastel colours
+color_binom <- rgb(0.30, 0.71, 0.67, alpha = 0.6) 
+color_pois <- rgb(1.00, 0.54, 0.40, alpha = 0.6)  
+
+# Split the plotting screen
+par(mfrow = c(1, 3))
+
+# Create a for loop for each lambda
+for (i in 1:3) {
+  lambda <- lambdas[i]
+  p <- p_values[i]
+  k <- 0:k_max
+  
+  # 1. Calculate the p.m.f to find the TVD
+  binom_probs <- dbinom(k, size = n, prob = p)
+  pois_probs <- dpois(k, lambda = lambda)
+  
+  tvd <- 0.5 * sum(abs(binom_probs - pois_probs))
+  y_max <- max(c(binom_probs, pois_probs))
+  
+  # 2. Plot Base for the Binomial
+  barplot(binom_probs, 
+          names.arg = k, 
+          col = color_binom, 
+          main = paste("Lambda =", lambda),
+          sub = paste("TVD =", round(tvd, 4)),
+          xlab = "k", 
+          ylab = "Probability",
+          ylim = c(0, y_max * 1.1),
+          space = 0)
+  
+  # 3. Plot Overlay for the Poisson
+  barplot(pois_probs, 
+          col = color_pois, 
+          border = NA,
+          add = TRUE,
+          space = 0)
+  
+  # Add the legend
+  legend("topright",
+         legend = c("Binomial", "Poisson"),
+         fill = c(color_binom, color_pois),
+         bty = "n")
+}
+
+
+```
+
+### Conclusion: Evaluating the Approximation
+To quantify how well the approximation actually holds, this project used the Total Variation Distance ($d_{TV}$):
+
+$$d_{TV} = \frac{1}{2} \sum_{k=0}^{\infty} |P(X_{Bin}=k) - P(X_{Pois}=k)|$$
+
+This measures the largest possible difference in probability the two distributions assign to any event, $0$ being a perfect match, $1$ being entirely disjoint. The natural follow-up question is: what counts as *good enough*? A quick Google search suggested that a $d_{TV} < 0.05$ is a reasonable threshold for practical use. Under that standard, pushing $\lambda$ all the way to $12$ ($p = 0.12$) — well outside the textbook's recommended bounds has still yielded a $d_{TV} \approx 0.031$. The maximum error on any single probability stays within a $3\%$ tolerance, which suggests the $\lambda < 7$ rule might be more conservative than strictly necessary.
+
+### Further Comment 
+One thing I noticed across all three plots: the Binomial consistently overshoots the Poisson around the mean, then undershoots it further out in the tails. This turns out to be a direct algebraic consequence of the variance gap:
+
+$$\text{Var}(X_{Bin}) = \lambda(1-p) < \lambda = \text{Var}(X_{Pois})$$
+
+Since $p > 0$, the Binomial always has a strictly tighter spread than its Poisson counterpart, so the same probability mass gets squeezed inward, producing a taller peak at the centre at the cost of lighter tails.
 
