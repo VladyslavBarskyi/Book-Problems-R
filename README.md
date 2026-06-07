@@ -5,5 +5,6 @@ Distributions:
 
 Geometric: 
 - https://rpubs.com/VladyslavBarskyi/geometric-memoryless-simulation
+- 
 Poisson:
 https://rpubs.com/VladyslavBarskyi/poisson-binomial-approx 
