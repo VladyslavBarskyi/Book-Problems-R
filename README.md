@@ -1,10 +1,9 @@
-# Book-Problems-R
-Tranlating and solving problems from the book "Mathematical Statistics with Applications" and making greater explorations
+# Statistical Explorations in R
 
-Distributions: 
+A collection of technical data simulations, mathematical proofs, and statistical implementations.
 
-Geometric: 
-- https://rpubs.com/VladyslavBarskyi/geometric-memoryless-simulation
-- 
-Poisson:
-https://rpubs.com/VladyslavBarskyi/poisson-binomial-approx 
+## Probability & Statistics
+
+### Distributions
+* **(https://rpubs.com/VladyslavBarskyi/poisson-binomial-approx)** – Evaluates convergence rate using Total Variation Distance and examines the structural variance gap ($\text{Var}(X_{\text{Bin}}) < \text{Var}(X_{\text{Pois}}$)).
+* **https://rpubs.com/VladyslavBarskyi/poisson-binomial-approx** – Uses large-scale trials to empirically verify the memoryless property ($P(Y > a + b \mid Y > a) = P(Y > b)$).
